@@ -5,40 +5,59 @@
 <title>Letter for You 💌</title>
 
 <style>
+/* RESET */
+* {
+  box-sizing: border-box;
+  font-family: "Courier New", monospace;
+}
+
+/* OUTSIDE BACKGROUND */
 body {
   margin: 0;
-  height: 100vh;
-  background: #fff1f3;
-  font-family: "Courier New", monospace;
+  background: #000;
   display: flex;
   justify-content: center;
   align-items: center;
+  height: 100vh;
+}
+
+/* PHONE FRAME (9:16) */
+.frame {
+  width: 100%;
+  max-width: 420px;
+  aspect-ratio: 9 / 16;
+  background: #fff1f3;
+  border-radius: 20px;
+  position: relative;
   overflow: hidden;
 }
 
-/* screens */
-.screen {
-  display: none;
-  text-align: center;
-}
-.active {
-  display: block;
-}
-
-/* hearts background */
+/* HEART BACKGROUND */
 .heart {
   position: absolute;
-  font-size: 10px;
-  color: #ff9aa2;
-  opacity: 0.4;
+  color: #f3a6b6;
+  font-size: 12px;
   animation: float 8s linear infinite;
+  opacity: 0.6;
 }
+
 @keyframes float {
   from { transform: translateY(100vh); }
   to { transform: translateY(-10vh); }
 }
 
-/* envelope */
+/* SCREENS */
+.screen {
+  display: none;
+  text-align: center;
+  padding: 20px;
+}
+
+.screen.active {
+  display: block;
+}
+
+/* ENVELOPE */
 .envelope {
   width: 120px;
   height: 80px;
@@ -47,6 +66,7 @@ body {
   position: relative;
   cursor: pointer;
 }
+
 .envelope::before,
 .envelope::after {
   content: "";
@@ -55,97 +75,122 @@ body {
   height: 100%;
   border-top: 2px solid #e07a7a;
 }
+
 .envelope::before {
   transform: rotate(45deg);
   transform-origin: top left;
 }
+
 .envelope::after {
   transform: rotate(-45deg);
   transform-origin: top right;
 }
-.envelope span {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  color: #e07a7a;
+
+.heart-center {
+  color: #e85d75;
+  margin-top: 28px;
 }
 
-/* buttons */
-.buttons button {
-  padding: 10px 24px;
-  font-size: 16px;
+/* TEXT */
+.small {
+  margin-top: 12px;
+  font-size: 14px;
+}
+
+/* BUTTONS */
+.buttons {
+  margin-top: 20px;
+}
+
+button {
+  padding: 10px 20px;
   border: none;
   border-radius: 8px;
-  margin: 10px;
+  font-size: 16px;
   cursor: pointer;
+  margin: 5px;
 }
-#yes {
-  background: #6fdc8c;
+
+.yes {
+  background: #6bdc9c;
 }
-#no {
+
+.no {
   background: #ff6b6b;
-  transition: transform 0.3s;
+  transition: all 0.3s ease;
 }
 </style>
 </head>
 
 <body>
+<div class="frame">
 
-<!-- floating hearts -->
-<script>
-for (let i = 0; i < 40; i++) {
-  const h = document.createElement("div");
-  h.className = "heart";
-  h.innerHTML = "♡";
-  h.style.left = Math.random() * 100 + "vw";
-  h.style.animationDuration = 5 + Math.random() * 5 + "s";
-  document.body.appendChild(h);
-}
-</script>
+  <!-- FLOATING HEARTS -->
+  <script>
+    for (let i = 0; i < 25; i++) {
+      let h = document.createElement("div");
+      h.className = "heart";
+      h.innerHTML = "♡";
+      h.style.left = Math.random() * 100 + "%";
+      h.style.animationDuration = (5 + Math.random() * 5) + "s";
+      document.querySelector(".frame").appendChild(h);
+    }
+  </script>
 
-<!-- SCREEN 1 -->
-<div class="screen active" id="s1">
-  <div class="envelope" onclick="next(1)">
-    <span>♥</span>
+  <!-- SCREEN 1 -->
+  <div class="screen active" id="screen1">
+    <div class="envelope" onclick="nextScreen(2)">
+      <div class="heart-center">♥</div>
+    </div>
+    <div class="small">♡ Letter for You ♡<br>Tap to open 💌</div>
   </div>
-  <p>♡ Letter for You ♡<br>Tap to open 💌</p>
-</div>
 
-<!-- SCREEN 2 -->
-<div class="screen" id="s2">
-  <p style="font-size:18px;">Koinara c julfia 🌸</p>
-  <p style="opacity:0.7;">Tap to continue →</p>
-  <div onclick="next(2)" style="cursor:pointer;">👉</div>
-</div>
-
-<!-- SCREEN 3 -->
-<div class="screen" id="s3">
-  <p style="font-size:15px;">
-    Number thrk o ei message thrk oi number thrktrifw 😅
-  </p>
-
-  <div class="buttons">
-    <button id="yes">YES 😄</button>
-    <button id="no" onclick="noClick()">NO 😶</button>
+  <!-- SCREEN 2 -->
+  <div class="screen" id="screen2">
+    <p>koinara c julfia</p>
+    <button class="yes" onclick="nextScreen(3)">Next 😊</button>
   </div>
+
+  <!-- SCREEN 3 -->
+  <div class="screen" id="screen3">
+    <p>
+      Number thrk o ei message thrk oi number thrktrifw 😅
+    </p>
+
+    <div class="buttons">
+      <button class="yes" onclick="yesClicked()">YES 😄</button>
+      <button class="no" id="noBtn" onclick="noClicked()">NO 😶</button>
+    </div>
+  </div>
+
+  <!-- FINAL MESSAGE -->
+  <div class="screen" id="final">
+    <p>Hehe… I knew it 😊💖<br>Message me now 🌸</p>
+  </div>
+
 </div>
 
 <script>
-function next(n) {
-  document.getElementById("s" + n).classList.remove("active");
-  document.getElementById("s" + (n + 1)).classList.add("active");
-}
-
 let noCount = 0;
-function noClick() {
-  const noBtn = document.getElementById("no");
+
+function nextScreen(n) {
+  document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
+  document.getElementById("screen" + n).classList.add("active");
+}
+
+function yesClicked() {
+  document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
+  document.getElementById("final").classList.add("active");
+}
+
+function noClicked() {
   noCount++;
+  const noBtn = document.getElementById("noBtn");
 
   if (noCount === 1) {
-    noBtn.style.transform = "scale(0.6)";
+    noBtn.style.transform = "scale(0.7)";
   } else {
-    noBtn.style.display = "none";
+    noBtn.remove();
   }
 }
 </script>
